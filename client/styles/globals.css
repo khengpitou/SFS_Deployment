@@ -1,0 +1,39 @@
+@import './index.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root {
+  --base-blue: rgba(35, 83, 145, 0.9);
+}
+.btn {
+  @apply inline-flex h-9 cursor-pointer items-center justify-center rounded-md bg-transparent px-2 text-sm font-medium transition-colors hover:bg-zinc-100 focus:outline-none focus:bg-zinc-100 active:scale-95 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-transparent dark:text-zinc-100 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 dark:focus:bg-zinc-800 dark:focus:ring-zinc-400 dark:focus:ring-offset-zinc-900 dark:data-[state=open]:bg-transparent
+}
+.base-color-bg {
+  background-color: var(--base-blue);
+}
+.base-color-text {
+  color: var(--base-blue);
+}
+
+.ant-table-thead .ant-table-cell {
+  background-color: var(--base-blue) !important;
+  color: white !important;
+}
+.ant-menu-dark{
+  background-color: transparent;
+}
+.ant-layout .ant-layout-sider{
+  background: var(--base-blue);
+}
+.ant-menu-item .ant-menu-title-content{
+  color: white;
+  font-weight: 700;
+}
+.anticon{
+  stroke: white;
+  stroke-width: 30
+}
+.ant-menu-dark .ant-menu-item-selected {
+  background-color: #4d76b1;
+}
