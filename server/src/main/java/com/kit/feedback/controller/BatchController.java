@@ -20,9 +20,7 @@ public class BatchController {
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity<BatchesResponse> getAllBatch(
-            @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "size", defaultValue = "10") int size){
+    public ResponseEntity<BatchesResponse> getAllBatch(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size){
         return ResponseEntity.ok(batchService.getBatches(page, size));
     }
 
@@ -32,7 +30,7 @@ public class BatchController {
             return ResponseEntity.ok(batchService.create(request));
         }catch (Exception e)
         {
-            return ResponseEntity.ok(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -46,7 +44,7 @@ public class BatchController {
         try{
             return ResponseEntity.ok(batchService.edit(request));
         }catch (Exception e){
-            return ResponseEntity.ok(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

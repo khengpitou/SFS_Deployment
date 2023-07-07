@@ -20,7 +20,7 @@ public class Department extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String name;
-    @OneToMany(mappedBy = "department")
+    @OneToMany(mappedBy = "department", cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private List<Batch> batches;
 

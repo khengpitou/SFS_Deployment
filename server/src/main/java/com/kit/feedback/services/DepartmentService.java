@@ -149,7 +149,11 @@ public class DepartmentService {
     }
 
     public String delete(UUID id){
-        departmentRepository.deleteById(id);
-        return "Successfully delete Department";
+        if(Utility.checkIfAdmin()){
+            departmentRepository.deleteById(id);
+            return "Successfully delete Department";
+        } else {
+            throw new RuntimeException("Cannot delete, Reason: Not Admin");
+        }
     }
 }

@@ -27,13 +27,12 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request){
-//        Avoid Register if use the same email or username
-        if(userRepository.existsByEmailOrUsername(request.getEmail(), request.getUsername())){
-            log.error("Username or email is already used: " + request.getUsername() + ", " + request.getEmail());
-            throw new RequestRejectedException("Username or email is already used");
+    public ResponseEntity register(@RequestBody RegisterRequest request){
+        try{
+            return ResponseEntity.ok(authenticationService.register(request));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.ok(authenticationService.register(request));
     }
 
     @PostMapping("/authenticate")

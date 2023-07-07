@@ -4,15 +4,12 @@ import com.kit.feedback.dto.DepartmentsResponse;
 import com.kit.feedback.model.Department;
 import com.kit.feedback.dto.DepartmentResponse;
 import com.kit.feedback.services.DepartmentService;
-import io.swagger.models.Response;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-@Slf4j
 @RestController
 @RequestMapping("/api/v1/department")
 public class DepartmentController {
@@ -26,7 +23,7 @@ public class DepartmentController {
         try{
             return ResponseEntity.ok(departmentService.create(request));
         }catch (Exception e){
-            return ResponseEntity.ok(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -43,7 +40,7 @@ public class DepartmentController {
         try{
             return ResponseEntity.ok(departmentService.edit(request));
         }catch(Exception e){
-            return ResponseEntity.ok(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -53,7 +50,11 @@ public class DepartmentController {
     }
 
     @GetMapping(value = "/delete")
-    public ResponseEntity<String> deleteDepartment(@RequestParam(name = "id") UUID id){
-        return ResponseEntity.ok(departmentService.delete(id));
+    public ResponseEntity deleteDepartment(@RequestParam(name = "id") UUID id){
+        try{
+            return ResponseEntity.ok(departmentService.delete(id));
+        }catch(Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

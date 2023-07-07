@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,9 @@ public class AuthenticationService {
     private final StudentRepository studentRepository;
 
     public AuthenticationResponse register(RegisterRequest request){
+        if(userRepository.existsByEmailOrUsername(request.getEmail(), request.getUsername())){
+            throw new RequestRejectedException("Username or email is already used");
+        }
         try{
             var user = User
                     .builder()

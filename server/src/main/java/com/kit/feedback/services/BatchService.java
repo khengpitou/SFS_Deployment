@@ -56,15 +56,20 @@ public class BatchService {
             batch.setUpdatedAt(LocalDateTime.now().toString());
             batch.setUpdatedBy(user.getId());
             batch.setCreatedBy(user.getId());
-            var createdBatch = batchRepository.save(batch);
-            return BatchResponse.builder()
-                    .id(createdBatch.getId())
-                    .createdAt(createdBatch.getCreatedAt())
-                    .createdBy(createdBatch.getCreatedBy())
-                    .updatedAt(createdBatch.getUpdatedAt())
-                    .updatedBy(createdBatch.getUpdatedBy())
-                    .batchNumber(createdBatch.getBatchNumber())
-                    .build();
+            if(Utility.checkIfAdmin()){
+                var createdBatch = batchRepository.save(batch);
+                return BatchResponse.builder()
+                        .id(createdBatch.getId())
+                        .createdAt(createdBatch.getCreatedAt())
+                        .createdBy(createdBatch.getCreatedBy())
+                        .updatedAt(createdBatch.getUpdatedAt())
+                        .updatedBy(createdBatch.getUpdatedBy())
+                        .batchNumber(createdBatch.getBatchNumber())
+                        .semesters(createdBatch.getSemesters())
+                        .build();
+            } else{
+                throw new RuntimeException("Cannot create, Reason: Not Admin");
+            }
         } catch(Exception e){
             log.error("Error creating new batch: " + e.getMessage());
             throw new RuntimeException(e.getMessage());
@@ -80,6 +85,7 @@ public class BatchService {
                 .createdBy(response.getCreatedBy())
                 .updatedAt(response.getUpdatedAt())
                 .updatedBy(response.getUpdatedBy())
+                .semesters(response.getSemesters())
                 .build();
     }
 
@@ -105,6 +111,7 @@ public class BatchService {
                     .updatedAt(saved.getUpdatedAt())
                     .batchNumber(saved.getBatchNumber())
                     .id(saved.getId())
+                    .semesters(saved.getSemesters())
                     .build();
         } else{
             throw new RuntimeException("Failed to edit batch-id: " + request.getId());
@@ -113,8 +120,12 @@ public class BatchService {
 
     public String delete(UUID id){
         try{
-            batchRepository.deleteById(id);
-            return "Successfully deleted";
+            if(Utility.checkIfAdmin()){
+                batchRepository.deleteById(id);
+                return "Successfully deleted";
+            } else{
+                throw new RuntimeException("Failed to delete, Reason: Not Admin");
+            }
         }catch (Exception e){
             return "Failed to delete batch: " + id;
         }
