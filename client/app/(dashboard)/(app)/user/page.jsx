@@ -11,6 +11,19 @@ import { toggleAddModal } from "@/components/partials/app/user-service/store";
 import AddUser from "@/components/partials/app/user-service/AddUser";
 import { ToastContainer } from "react-toastify";
 import EditUser from "@/components/partials/app/user-service/EditUser";
+import axios from "axios";
+
+const apiUrl = 'http://loalhost:8080';
+const originUrl = 'http://localhost:3000';
+
+axios.interceptors.request.use((config) => {
+	const token = localStorage.getItem('token'); // Assuming the token is stored in localStorage after login
+	if (token) {
+		config.headers['Authorization'] = `Bearer ${token}`;
+	}
+	config.headers['Origin'] = originUrl;
+	return config;
+});
 
 const UserPostPage = () => {
   const [filler, setFiller] = useState("list");
@@ -88,7 +101,7 @@ const UserPostPage = () => {
       )}
       {filler === "list" && !isLoaded && (
         <div>
-          <UserList projects={users} />
+          <UserList/>
         </div>
       )}
       <AddUser />

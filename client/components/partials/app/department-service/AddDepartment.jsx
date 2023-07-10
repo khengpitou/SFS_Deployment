@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Select, { components } from "react-select";
 import Modal from "@/components/ui/Modal";
 import { useSelector, useDispatch } from "react-redux";
-import { toggleAddModal, pushUser } from "./store";
+import {  toggleAddModalDep, pushDep } from "./store";
 import Textinput from "@/components/ui/Textinput";
 import Textarea from "@/components/ui/Textarea";
 import Flatpickr from "react-flatpickr";
@@ -13,6 +13,7 @@ import * as yup from "yup";
 import { v4 as uuidv4 } from "uuid";
 
 import FormGroup from "@/components/ui/FormGroup";
+import axios from "axios";
 
 const styles = {
   multiValue: (base, state) => {
@@ -56,12 +57,12 @@ const OptionComponent = ({ data, ...props }) => {
 };
 
 const AddDepartment = () => {
-  const { openProjectModal } = useSelector((state) => state.user);
+  const { openProjectModal } = useSelector((state) => state.department);
   const dispatch = useDispatch();
 
   const FormValidationSchema = yup
     .object({
-      title: yup.string().required("Title is required"),
+      name: yup.string().required("Department name is required"),
      
     })
     .required();
@@ -77,33 +78,49 @@ const AddDepartment = () => {
     mode: "all",
   });
 
-  const onSubmit = (data) => {
-    console.log(data)
-    const user = {
-      id: uuidv4(),
-      name: data?.title,
+  // const onSubmit = (data) => {
+  //   console.log(data)
+  //   const user = {
+  //     id: uuidv4(),
+  //     name: data?.name,
      
-    };
-    dispatch(pushUser(user));
-    dispatch(toggleAddModal(false));
-    reset();
-  };
+  //   };
+  //   dispatch(pushDep(user));
+  //   dispatch(toggleAddModalDep(false));
+  //   reset();
+  // };
 
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/v1/department/create",
+        {
+          name: data.name,
+        }
+      );
+      const newDepartment = response.data; // Assuming the response contains the newly created department
+      dispatch(pushDep(newDepartment));
+      dispatch(toggleAddModalDep(false));
+      reset();
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <div>
       <Modal
-        title="Create User"
+        title="Create Department"
         labelclassName="btn-outline-dark"
         activeModal={openProjectModal}
-        onClose={() => dispatch(toggleAddModal(false))}
+        onClose={() => dispatch(toggleAddModalDep(false))}
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 ">
           <Textinput
-            name="title"
+            name="name"
             label="Department"
             placeholder="Enter Department Name"
             register={register}
-            error={errors.title}
+            error={errors.name}
           />
           
           <div className="ltr:text-right rtl:text-left">
